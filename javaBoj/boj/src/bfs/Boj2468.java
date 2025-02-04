@@ -1,6 +1,7 @@
 package bfs;
 
 import java.io.*;
+import java.util.Arrays;
 import java.util.Deque;
 import java.util.LinkedList;
 import java.util.StringTokenizer;
@@ -9,6 +10,7 @@ import java.util.StringTokenizer;
 public class Boj2468 {
     static int N;
     static int[][] land;
+    static boolean[][] visited;
     static int[] dx = {1, 0, -1, 0};
     static int[] dy = {0, 1, 0, -1};
     static int maxHeight;
@@ -20,12 +22,15 @@ public class Boj2468 {
     public static void main(String[] args) throws IOException{
         Boj2468 process = new Boj2468();
         process.init(bf);
+        process.check();
 
     }
 
     public void init(BufferedReader bf) throws IOException{
         N = Integer.parseInt(bf.readLine());
         maxHeight = 0;
+        land = new int[N][N];
+        visited = new boolean[N][N];
         for (int i = 0; i < N; i++) {
             StringTokenizer st = new StringTokenizer(bf.readLine());
             for (int j = 0; j < N; j++) {
@@ -36,15 +41,45 @@ public class Boj2468 {
         }
     }
 
-    public void bfs(int x, int y) {
+    public void check() {
+        int maxVal = 0;
+        for (int i = 0; i < maxHeight; i++) {
+            int cnt = 0;
+            for (int j = 0; j < N; j++) {
+                for (int k = 0; k < N; k++) {
+                    if (!visited[j][k] && land[j][k] > i) {
+                        bfs(j, k, i);
+                        cnt++;
+                    }
+                }
+            }
+            visited = new boolean[N][N];
+            maxVal = Math.max(maxVal, cnt);
+        }
+        System.out.println(maxVal);
+    }
 
-        int count = 0;
+    private static void bfs(int x, int y, int height) {
         deque.offer(new Pair(x,y));
-
-
-        
-
-
+        visited[x][y] = true;
+        while (!deque.isEmpty()) {
+            Pair cur = deque.pollFirst();
+            for (int i = 0; i < 4; i++) {
+                int nx = cur.x + dx[i];
+                int ny = cur.y + dy[i];
+                if (nx < 0 || nx >= N || ny < 0 || ny >= N) {
+                    continue;
+                }
+                if (land[nx][ny] <= height) {
+                    continue;
+                }
+                if (visited[nx][ny]) {
+                    continue;
+                }
+                visited[nx][ny] = true;
+                deque.offer(new Pair(nx, ny));
+            }
+        }
     }
 
 
