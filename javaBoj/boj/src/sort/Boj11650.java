@@ -50,15 +50,16 @@ public class Boj11650 {
             System.out.println(pair.x + " " + pair.y);
         }
     }
-}
 
+    static class Pair {
+        int x;
+        int y;
 
-class Pair {
-    int x;
-    int y;
-
-    public Pair(int x, int y) {
-        this.x = x;
-        this.y = y;
+        public Pair(int x, int y) {
+            this.x = x;
+            this.y = y;
+        }
     }
 }
+
+
