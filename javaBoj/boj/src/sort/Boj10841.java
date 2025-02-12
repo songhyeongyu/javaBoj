@@ -53,18 +53,17 @@ public class Boj10841{
             System.out.println(user.age + " " + user.name);
         }
     }
+    static class User {
+        int age;
+        String name;
+        int idx;
 
-
-}
-
-class User {
-    int age;
-    String name;
-    int idx;
-
-    public User(int age, String name, int idx) {
-        this.age = age;
-        this.name = name;
-        this.idx = idx;
+        public User(int age, String name, int idx) {
+            this.age = age;
+            this.name = name;
+            this.idx = idx;
+        }
     }
+
 }
+
