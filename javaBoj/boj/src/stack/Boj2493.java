@@ -4,34 +4,58 @@ import java.util.*;
 import java.io.*;
 
 public class Boj2493 {
-    public static void main(String[] args) throws IOException {
-        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        StringBuilder sb = new StringBuilder();
+    static int N;
+    static Stack<Top> stack = new Stack<>();
+    static int[] arr;
+    static int[] ans;
+    static StringBuilder sb = new StringBuilder();
+    public static void main(String[] args) throws IOException{
+        Boj2493 process = new Boj2493();
+        process.run();
 
-        int N = Integer.parseInt(br.readLine());
-        Stack<Pair> tower = new Stack<>();
-        tower.push(new Pair(100000001, 0)); // Initial value to handle edge cases
+    }
 
-        StringTokenizer st = new StringTokenizer(br.readLine());
-        for (int i = 1; i <= N; i++) {
-            int height = Integer.parseInt(st.nextToken());
-            while (tower.peek().height < height) {
-                tower.pop();
+    private void run() throws IOException{
+        init();
+        searchStack();
+
+    }
+
+    private void init() throws IOException{
+        BufferedReader bf = new BufferedReader(new InputStreamReader(System.in));
+
+        N = Integer.parseInt(bf.readLine());
+        arr = new int[N];
+        ans = new int[N];
+        StringTokenizer st = new StringTokenizer(bf.readLine());
+
+        for (int i = 0; i < N; i++) {
+            arr[i] = Integer.parseInt(st.nextToken());
+        }
+    }
+
+    int k = 0;
+    private void searchStack() {
+        for (int i = 0; i <N; i++) {
+            while (!stack.isEmpty() && stack.peek().height < arr[i]) {
+                stack.pop();
             }
-            sb.append(tower.peek().index).append(" ");
-            tower.push(new Pair(height, i));
+            if(!stack.isEmpty()) {
+                ans[i] = stack.peek().idx;
+            }else {
+                ans[i] = 0;
+            }
+            stack.push(new Top(arr[i], i));
         }
-
-        System.out.println(sb);
     }
+    static class Top{
+        int height;
+        int idx;
 
-    // Helper class to store height and index as a pair
-    static class Pair {
-        int height, index;
-
-        public Pair(int height, int index) {
+        public Top(int height, int idx) {
             this.height = height;
-            this.index = index;
+            this.idx = idx;
         }
     }
+
 }
