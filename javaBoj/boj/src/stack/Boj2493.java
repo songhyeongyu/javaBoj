@@ -18,7 +18,7 @@ public class Boj2493 {
     private void run() throws IOException{
         init();
         searchStack();
-
+        printResult();
     }
 
     private void init() throws IOException{
@@ -32,22 +32,33 @@ public class Boj2493 {
         for (int i = 0; i < N; i++) {
             arr[i] = Integer.parseInt(st.nextToken());
         }
+
     }
 
-    int k = 0;
     private void searchStack() {
-        for (int i = 0; i <N; i++) {
+
+        for (int i = 0; i < N; i++) {
             while (!stack.isEmpty() && stack.peek().height < arr[i]) {
                 stack.pop();
             }
-            if(!stack.isEmpty()) {
+
+            if (!stack.isEmpty()) {
                 ans[i] = stack.peek().idx;
-            }else {
+            }
+            else{
                 ans[i] = 0;
             }
-            stack.push(new Top(arr[i], i));
+
+            stack.push(new Top(arr[i], i+1));
         }
     }
+
+    private void printResult() {
+        for (int i = 0; i < N; i++) {
+            System.out.print(ans[i] + " ");
+        }
+    }
+
     static class Top{
         int height;
         int idx;
@@ -57,5 +68,6 @@ public class Boj2493 {
             this.idx = idx;
         }
     }
+
 
 }
