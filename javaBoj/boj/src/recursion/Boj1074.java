@@ -4,42 +4,38 @@ import java.io.*;
 import java.util.*;
 
 public class Boj1074 {
+    static int N;
+    static int r;
+    static int c;
+    static int[][] arr;
 
     public static void main(String[] args) throws IOException{
         Boj1074 process = new Boj1074();
-        process.run();
 
+        process.run();
     }
 
-    public void run() throws IOException{
+    private void run() throws IOException {
+        init();
+    }
+    private void init() throws IOException {
         BufferedReader bf = new BufferedReader(new InputStreamReader(System.in));
+
         StringTokenizer st = new StringTokenizer(bf.readLine());
 
-        int N = Integer.parseInt(st.nextToken());
-        int r = Integer.parseInt(st.nextToken());
-        int c = Integer.parseInt(st.nextToken());
+        N = Integer.parseInt(st.nextToken());
+        r = Integer.parseInt(st.nextToken());
+        c = Integer.parseInt(st.nextToken());
 
         int ans = func(N, r, c);
-        System.out.print(ans);
+
     }
 
-    public int func(int n, int r, int c) {
-        if(n==0) return 0;
-
-        int half = 1 << (n - 1);
-
-        if (r < half && c < half) {
-            return func(n-1,r,c);
-        }
-        if (r < half && c >= half) {
-            return half * half + func(n - 1, r, c - half);
+    private int func(int n,int r,int c) {
+        if (n == 0) {
+            return 0;
         }
 
-        if (r >= half && c < half) {
-            return 2 * half * half + func(n - 1, r - half, c);
-        }
-
-        return 3 * half * half + func(n - 1, r - half, c - half);
-
+        return 0;
     }
 }
