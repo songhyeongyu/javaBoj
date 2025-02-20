@@ -48,14 +48,14 @@ public class Boj2206 {
 
     private int bfs() {
         dq.offer(new Node(0, 0, 0));
-        dist[0][0][0] = dist[0][0][1] = 0;
+        dist[0][0][0] = dist[0][0][1] = 1;
 
         while (!dq.isEmpty()) {
             Node cur = dq.pollFirst();
             int nxt = dist[cur.x][cur.y][cur.broken] + 1;
 
             if (cur.x == N - 1 && cur.y == M - 1) {
-                return dist[N - 1][M - 1][cur.broken];
+                return dist[cur.x][cur.y][cur.broken];
             }
 
             for (int i = 0; i < 4; i++) {
