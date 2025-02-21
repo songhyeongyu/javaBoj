@@ -16,13 +16,14 @@ public class Boj2630 {
         process.run();
     }
 
-    private void run() throws IOException{
+    private void run() throws IOException {
         init();
-        System.out.println(oneCount);
+        recursion(0,0,N);
         System.out.println(zeroCount);
+        System.out.println(oneCount);
     }
 
-    private void init() throws IOException{
+    private void init() throws IOException {
         BufferedReader bf = new BufferedReader(new InputStreamReader(System.in));
 
         N = Integer.parseInt(bf.readLine());
@@ -35,39 +36,41 @@ public class Boj2630 {
                 paper[i][j] = n;
             }
         }
+
+
     }
 
-    private void func(int x,int y,int cur) {
-        if (cur == 1 || isSame(x, y, cur) != 0) {
-            int count = isSame(x, y, cur);
-            if (paper[x][y] == 1) {
-                oneCount += count;
-            }else{
-                zeroCount += count;
+    private void recursion(int x, int y, int n) {
+
+        if (isSame(x, y, n)) {
+            int first = paper[x][y];
+            if (first == 1) {
+                oneCount += 1;
+            } else {
+                zeroCount += 1;
             }
+            return;
         }
+        int half = n / 2;
+        recursion(x, y, n / 2);
+        recursion(x, y + half, n / 2);
+        recursion(x + half, y, n / 2);
+        recursion(x + half, y + half, n / 2);
 
-        int half = cur / 2;
 
-        func(x, y, half);
-        func(x + half, y, half);
-        func(x, y + half, half);
-        func(x + half, half + y, half);
     }
 
-    private int isSame(int x, int y, int size) {
+    private boolean isSame(int x, int y, int n) {
         int first = paper[x][y];
-        int count = 0;
-
-        for (int i = x; i < x + size; i++) {
-            for (int j = y; j < y+size; j++) {
+        for (int i = x; i < x + n; i++) {
+            for (int j = y; j < y + n; j++) {
                 if (first != paper[i][j]) {
-                    return 0;
+                    return false;
                 }
-                count++;
             }
         }
-        return count;
+        return true;
     }
+
 
 }
