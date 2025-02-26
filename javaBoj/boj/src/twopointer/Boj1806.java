@@ -22,26 +22,23 @@ public class Boj1806 {
 
     private void init() throws IOException {
         BufferedReader bf = new BufferedReader(new InputStreamReader(System.in));
-
         StringTokenizer st = new StringTokenizer(bf.readLine());
 
         N = Integer.parseInt(st.nextToken());
         M = Integer.parseInt(st.nextToken());
-        arr = new int[N];
+
         st = new StringTokenizer(bf.readLine());
+        arr = new int[N];
         for (int i = 0; i < N; i++) {
             arr[i] = Integer.parseInt(st.nextToken());
         }
 
-        Arrays.sort(arr);
-
-        System.out.println(Arrays.toString(arr));
     }
 
-    private void search() {
-        int tot = arr[0];
-        int min = Integer.MAX_VALUE;
+    public void search() {
         int ed = 0;
+        int tot = arr[0];
+        int mn = Integer.MAX_VALUE;
 
         for (int st = 0; st < N; st++) {
             while (ed < N && tot < M) {
@@ -49,19 +46,21 @@ public class Boj1806 {
                 if (ed != N) {
                     tot += arr[ed];
                 }
-            }
+                }
             if (ed == N) {
                 break;
             }
-            min = Math.min(min, ed - st + 1);
+            mn = Math.min(mn, ed - st + 1);
             tot -= arr[st];
         }
 
-        if (min == Integer.MAX_VALUE) {
-            min = 0;
+        if (mn == Integer.MAX_VALUE) {
+            mn = 0;
         }
-        System.out.println(min);
+        System.out.println(mn);
 
     }
+
+
 
 }
