@@ -17,7 +17,7 @@ public class Boj2493 {
 
     private void run() throws IOException{
         init();
-        searchStack();
+        searchTop();
         printResult();
     }
 
@@ -35,21 +35,20 @@ public class Boj2493 {
 
     }
 
-    private void searchStack() {
+    private void searchTop() {
 
         for (int i = 0; i < N; i++) {
-            while (!stack.isEmpty() && stack.peek().height < arr[i]) {
-                stack.pop();
-            }
 
-            if (!stack.isEmpty()) {
-                ans[i] = stack.peek().idx;
-            }
-            else{
+            while (!stack.isEmpty() && arr[i] > stack.peek().high) {
+                    stack.pop();
+                }
+            if (stack.isEmpty()) {
                 ans[i] = 0;
+            }else{
+                ans[i] = stack.peek().index + 1;
             }
 
-            stack.push(new Top(arr[i], i+1));
+            stack.push(new Top(arr[i], i));
         }
     }
 
@@ -59,15 +58,18 @@ public class Boj2493 {
         }
     }
 
-    static class Top{
-        int height;
-        int idx;
 
-        public Top(int height, int idx) {
-            this.height = height;
-            this.idx = idx;
+    static class Top{
+        int high;
+        int index;
+
+        public Top(int high, int index) {
+            this.high = high;
+            this.index = index;
         }
     }
+
+
 
 
 }
