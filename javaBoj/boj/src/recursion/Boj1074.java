@@ -23,19 +23,37 @@ public class Boj1074 {
 
         StringTokenizer st = new StringTokenizer(bf.readLine());
 
-        N = Integer.parseInt(st.nextToken());
-        r = Integer.parseInt(st.nextToken());
-        c = Integer.parseInt(st.nextToken());
+        int N = Integer.parseInt(st.nextToken());
+        int r = Integer.parseInt(st.nextToken());
+        int c = Integer.parseInt(st.nextToken());
+        int size = 1 << N;
 
-        int ans = func(N, r, c);
+        arr = new int[size][size];
+        System.out.println(func(r, c, N));
 
     }
 
-    private int func(int n,int r,int c) {
+    private int func(int x, int y, int n) {
         if (n == 0) {
             return 0;
         }
 
-        return 0;
+        int half = 1 << (n - 1);
+
+
+        if (x < half && y < half) {
+            return func(x, y, n-1);
+        }
+
+        if (x < half && y > half) {
+            return 2 * 3 +func(x, y-half, n - 1);
+        }
+
+        if (x > half && y < half) {
+            return 2 + 3 * func(x-half, y, n - 1);
+        }
+
+        return 3 + 4*func(x-half, y-half, n-1);
+
     }
 }
