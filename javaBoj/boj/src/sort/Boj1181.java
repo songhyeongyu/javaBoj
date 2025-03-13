@@ -1,52 +1,50 @@
 package sort;
 
-
-import java.util.*;
 import java.io.*;
+import java.util.*;
 
 public class Boj1181 {
+    static Set<String> strings = new LinkedHashSet<>();
     static int N;
-    static ArrayList<String> strList = new ArrayList<>();
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws IOException{
         Boj1181 process = new Boj1181();
         process.run();
     }
 
-    public void run() throws IOException {
+    private void run() throws IOException {
         init();
-        sortStrList();
-        printStrList();
     }
 
-    public void init() throws IOException{
+    private void init() throws IOException {
         BufferedReader bf = new BufferedReader(new InputStreamReader(System.in));
+
         N = Integer.parseInt(bf.readLine());
 
         for (int i = 0; i < N; i++) {
-            String input = bf.readLine();
-            if (strList.contains(input)) {
-                continue;
-            }
-            strList.add(input);
+            strings.add(bf.readLine());
         }
+
+        sortString();
+
     }
 
-    public void sortStrList() {
-        Collections.sort(strList, new Comparator<String>(){
+    private void sortString() {
+        List<String> str = new ArrayList<>(strings);
+        Collections.sort(str, new Comparator<String>() {
             @Override
-            public int compare(String s1, String s2) {
-                if (s1.length() == s2.length()) {
-                    return s1.compareTo(s2);
+            public int compare(String o1, String o2) {
+                if (o1.length() == o2.length()) {
+                    return o1.compareTo(o2);
                 }
-                return Integer.compare(s1.length(), s2.length());
+                return o1.length() - o2.length();
             }
-        });
-    }
 
-    public void printStrList() {
-        for (String string : strList) {
+        });
+
+        for (String string : str) {
             System.out.println(string);
         }
     }
+
 }
