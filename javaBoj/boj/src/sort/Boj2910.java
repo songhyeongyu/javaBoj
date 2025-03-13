@@ -1,80 +1,71 @@
 package sort;
 
-import java.util.*;
 import java.io.*;
+import java.util.*;
 
 public class Boj2910 {
+    static HashMap<Integer,Node> sets = new LinkedHashMap<>();
     static int N;
-    static int C;
-    static ArrayList<Pair> pairs = new ArrayList<>();
+    static int M;
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws IOException{
         Boj2910 process = new Boj2910();
         process.run();
-
     }
-    public void run() throws IOException {
+
+    private void run() throws IOException {
         init();
-        countSort();
-        printSort();
     }
 
-    public void init() throws IOException{
+    private void init() throws IOException {
         BufferedReader bf = new BufferedReader(new InputStreamReader(System.in));
+
         StringTokenizer st = new StringTokenizer(bf.readLine());
+
         N = Integer.parseInt(st.nextToken());
-        C = Integer.parseInt(st.nextToken());
+        M = Integer.parseInt(st.nextToken());
 
         st = new StringTokenizer(bf.readLine());
+
         for (int i = 0; i < N; i++) {
             int num = Integer.parseInt(st.nextToken());
-            boolean contain = false;
-
-            for (Pair pair : pairs) {
-                if (pair.value == num) {
-                    pair.count++;
-                    contain = true;
-                    break;
-                }
-            }
-            if(!contain) {
-                pairs.add(new Pair(num, 1, i));
+            if (!sets.containsKey(num)) {
+                sets.put(num, new Node(i, 1));
+            }else{
+                sets.put(num, new Node(sets.get(num).index, sets.get(num).count + 1));
             }
         }
 
-    }
 
-    public void countSort() {
-        Collections.sort(pairs, new Comparator<Pair>(){
+        ArrayList<Map.Entry<Integer, Node>> lst = new ArrayList<>(sets.entrySet());
+
+        Collections.sort(lst, new Comparator<Map.Entry<Integer, Node>>() {
             @Override
-            public int compare(Pair p1, Pair p2) {
-                if (p1.count == p2.count) {
-                    return Integer.compare(p1.index, p2.index);
+            public int compare(Map.Entry<Integer, Node> o1, Map.Entry<Integer, Node> o2) {
+                if (o1.getValue().count == o2.getValue().count) {
+                    return o1.getValue().index - o2.getValue().index;
                 }
-                return Integer.compare(p2.count, p1.count);
+                return o2.getValue().count - o1.getValue().count;
             }
         });
-    }
 
-    public void printSort() {
-        StringBuilder sb = new StringBuilder();
-        for (Pair pair : pairs) {
-            sb.append((pair.value + " ").repeat(pair.count));
+        for (Map.Entry<Integer, Node> integerNodeEntry : lst) {
+            int count = 0;
+            while(count < integerNodeEntry.getValue().count) {
+                System.out.print(integerNodeEntry.getKey()+ " ");
+                count++;
+            }
         }
-        System.out.println(sb.toString().trim());
     }
 
-    static class Pair {
-        int value;
-        int count;
+    static class Node{
         int index;
+        int count;
 
-        public Pair(int value, int count,int index) {
-            this.value = value;
-            this.count = count;
+        public Node(int index, int count) {
             this.index = index;
+            this.count = count;
         }
-
     }
 
 
