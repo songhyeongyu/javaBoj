@@ -4,34 +4,36 @@ import java.io.*;
 import java.util.*;
 
 public class Boj11656 {
-    static ArrayList<String> strList = new ArrayList<>();
-    public static void main(String[] args) throws IOException {
+    static List<String> strings = new ArrayList<>();
+
+    public static void main(String[] args) throws IOException{
         Boj11656 process = new Boj11656();
         process.run();
-
     }
 
-    public void run() throws IOException{
-        init();
-        sortString();
-        printResult();
+    private void run() throws IOException{
+        String input = init();
+        splitToken(input);
+        sortStrings();
+        printString();
     }
 
-    public void init() throws IOException{
+    private String init() throws IOException {
         BufferedReader bf = new BufferedReader(new InputStreamReader(System.in));
-        String input = bf.readLine();
-        StringBuilder sb = new StringBuilder();
-        sliceString(input);
+
+        return bf.readLine();
     }
 
-    private static void sliceString(String input) {
-        for (int i = input.length() -1; i > -1; i--) {
-            strList.add(input.substring(i, input.length()));
+    private void splitToken(String input) {
+        for (int i = 0; i < input.length() ; i++) {
+            String result = input.substring(i);
+            strings.add(result);
         }
+
     }
 
-    public void sortString() {
-        Collections.sort(strList, new Comparator<String>(){
+    private void sortStrings() {
+        Collections.sort(strings,new Comparator<String>(){
             @Override
             public int compare(String s1, String s2) {
                 return s1.compareTo(s2);
@@ -39,9 +41,11 @@ public class Boj11656 {
         });
     }
 
-    public void printResult() {
-        for (String string : strList) {
+    private void printString() {
+        for (String string : strings) {
             System.out.println(string);
         }
     }
+
+
 }
