@@ -6,12 +6,14 @@ import java.util.*;
 public class Boj15686 {
     static int N;
     static int M;
-
     static int[][] board;
-
-    static List<Node> chicken = new LinkedList<>();
-    static List<Node> house = new LinkedList<>();
-
+    static List<Node> house;
+    static int[] temp;
+    static int[] arr;
+    static List<Node> chicken;
+    static List<Integer>[] dist;
+    static boolean[] visited;
+    static int result = Integer.MAX_VALUE;
     public static void main(String[] args) throws IOException{
         Boj15686 process = new Boj15686();
         process.run();
@@ -19,6 +21,11 @@ public class Boj15686 {
 
     private void run() throws IOException {
         init();
+        calculateDist();
+        recur(0,0);
+        System.out.println(result);
+
+
     }
 
     private void init() throws IOException {
@@ -28,127 +35,75 @@ public class Boj15686 {
         N = Integer.parseInt(st.nextToken());
         M = Integer.parseInt(st.nextToken());
         board = new int[N][N];
+        house = new ArrayList<>();
+        chicken = new ArrayList<>();
+
         for (int i = 0; i < N; i++) {
             st = new StringTokenizer(bf.readLine());
             for (int j = 0; j < N; j++) {
-
                 int num = Integer.parseInt(st.nextToken());
                 if (num == 1) {
-                    house.add(new Node(i+1, j+1));
+                    house.add(new Node(i, j));
                 }
                 else if (num == 2) {
-                    chicken.add(new Node(i+1,j+1));
+                    chicken.add(new Node(i, j));
                 }
                 board[i][j] = num;
             }
-
         }
-
-        int[][] dist = calculateDist();
-        HashMap<Integer, Integer> before = findMinChicken(dist);
-        HashMap<Integer, Integer> after = sortHashMap(before);
-        List<Integer> keys = new ArrayList<>(after.keySet());
-        for (Integer key : keys) {
-            System.out.println(key);
+        dist = new ArrayList[house.size()];
+        for (int i = 0; i < house.size(); i++) {
+            dist[i] = new ArrayList<>();
         }
-        int[][] select = new int[M][dist[0].length];
-
-        for (Map.Entry<Integer, Integer> integerIntegerEntry : after.entrySet()) {
-            System.out.println(integerIntegerEntry.getKey() + " " + integerIntegerEntry.getValue());
-        }
-        int cnt = 0;
-        while (cnt < M) {  // M개 만큼 뽑기
-            int index = (keys.size() - 1) - cnt; // 뒤에서부터 선택
-            select[cnt] = dist[keys.get(index)]; // 선택한 값 저장
-            cnt++;
-        }
+        temp = new int[chicken.size()];
+        visited = new boolean[chicken.size()];
+        arr = new int[M];
 
 
-
-        System.out.println(Arrays.deepToString(select));
-        int ans = findDistance(select);
-        System.out.println(ans);
-
+        //거리를 모두 계산 해놓고
     }
 
-    private int[][] calculateDist() {
-        int[][] distance = new int[chicken.size()][house.size()];
-        for (int i = 0; i < chicken.size(); i++) {
-            for (int j = 0; j < house.size(); j++) {
-                distance[i][j] = Math.abs(chicken.get(i).x - house.get(j).x) + Math.abs(chicken.get(i).y - house.get(j).y);
+    private void calculateDist() {
+        //1. 집을 기준으로
+        int index = 0;
+        for (Node h : house) {
+            for (Node c : chicken) {
+                dist[index].add(Math.abs(h.x - c.x) + Math.abs(h.y - c.y));
             }
+            if (index >= house.size()) {
+                break;
+            }
+            index++;
         }
-
-        return distance;
     }
 
-    private HashMap<Integer,Integer> findMinChicken(int[][] dist) {
-        HashMap<Integer,Integer> minStores = new LinkedHashMap<>();
-        for (int i = 0; i < dist.length; i++) {
-            minStores.put(i, 0);
-        }
-        for (int i = 0; i < dist[0].length; i++) {
-            int min = Integer.MAX_VALUE;
-            int minIndex = -1;
-
-            for (int j = 0; j < dist.length; j++) {
-                if (dist[j][i] < min) {
-                    min = dist[j][i];
-                    minIndex = j;
+    private void recur(int cur,int start) {
+        if (cur == M) {
+            for (int i = 0; i < M; i++) {
+                arr[i] = temp[i];
+            }
+            int ans = 0;
+            for (List<Integer> d : dist) {
+                int min = Integer.MAX_VALUE;
+                for (int i = 0; i < arr.length; i++) {
+                    min = Math.min(min, d.get(arr[i]));
                 }
+                ans += min;
             }
+            result = Math.min(ans, result);
+            return;
 
-            if (minIndex != -1) {
-                if (minStores.containsKey(minIndex)) {
-                    minStores.put(minIndex,minStores.get(minIndex) + 1);
-                }
-            }
-        }
-        return minStores;
-    }
-
-    private HashMap<Integer, Integer> sortHashMap(HashMap<Integer, Integer> minStores) {
-
-        List<Map.Entry<Integer, Integer>> entryList = new ArrayList<>(minStores.entrySet());
-
-        entryList.sort(new Comparator<Map.Entry<Integer, Integer>>() {
-            @Override
-            public int compare(Map.Entry<Integer, Integer> o1, Map.Entry<Integer, Integer> o2) {
-                return o1.getValue().compareTo(o2.getValue());
-            }
-        });
-
-        HashMap<Integer, Integer> sortMap = new LinkedHashMap<>();
-        for (Map.Entry<Integer, Integer> e : entryList) {
-            sortMap.put(e.getKey(), e.getValue());
         }
 
-        return sortMap;
-    }
-
-    private int findDistance(int[][] dist) {
-        int sumValue = 0;
-        for (int i = 0; i < dist[0].length; i++) {
-            int min = Integer.MAX_VALUE;
-            int minIndex = -1;
-
-            for (int j = 0; j < dist.length; j++) {
-                if (dist[j][i] < min) {
-                    min = dist[j][i];
-                    minIndex = j;
-                }
-            }
-
-            if (minIndex != -1) {
-                sumValue += min;
+        for (int i = start; i < chicken.size(); i++) {
+            if (!visited[i]) {
+                visited[i] = true;
+                temp[cur] = i;
+                recur(cur + 1,i + 1);
+                visited[i] = false;
             }
         }
-
-        return sumValue;
     }
-
-
-
 
     static class Node{
         int x;
