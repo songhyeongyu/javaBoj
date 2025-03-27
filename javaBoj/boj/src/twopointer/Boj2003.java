@@ -6,56 +6,60 @@ import java.util.*;
 
 
 public class Boj2003 {
-
     static int N;
     static int M;
     static int[] arr;
 
-    public static void main(String[] args) throws IOException {
-
+    public static void main(String[] args) throws IOException{
         Boj2003 process = new Boj2003();
         process.run();
     }
 
     private void run() throws IOException {
         init();
-        search();
+        twoPointer();
     }
 
     private void init() throws IOException {
         BufferedReader bf = new BufferedReader(new InputStreamReader(System.in));
-        StringTokenizer st = new StringTokenizer(bf.readLine());
 
+        StringTokenizer st = new StringTokenizer(bf.readLine());
         N = Integer.parseInt(st.nextToken());
         M = Integer.parseInt(st.nextToken());
-        arr = new int[N];
-        st = new StringTokenizer(bf.readLine());
 
+        st = new StringTokenizer(bf.readLine());
+        arr = new int[N];
         for (int i = 0; i < N; i++) {
             arr[i] = Integer.parseInt(st.nextToken());
         }
+
+
     }
 
-    private void search() {
-        int ed = 0;
+    private void twoPointer() {
+        int end = 0;
         int tot = arr[0];
-        int count = 0;
+        int cnt = 0;
         for (int st = 0; st < N; st++) {
-            while (ed < N && tot < M) {
-                ed++;
-                if (ed != N) {
-                    tot += arr[ed];
+
+            while (end < N && tot <= M) {
+                if (tot == M) {
+                    cnt++;
+                }
+                end++;
+                if (end != N) {
+                    tot += arr[end];
                 }
             }
 
-            if (ed == N) {
+            if (end == N) {
                 break;
             }
-            if (tot == M) {
-                count++;
-            }
+
+
             tot -= arr[st];
         }
-        System.out.println(count);
+
+        System.out.println(cnt);
     }
 }
