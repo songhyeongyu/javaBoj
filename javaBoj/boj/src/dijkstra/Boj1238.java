@@ -1,17 +1,19 @@
 package dijkstra;
 
-import java.util.*;
 import java.io.*;
+import java.util.*;
 
 public class Boj1238 {
-    static List<List<Node>> graph = new ArrayList<>();
-    static PriorityQueue<Node> pq;
-    static int[] dist;
-
-    static final int INF = Integer.MAX_VALUE;
     static int N;
     static int M;
     static int X;
+
+    static List<List<Node>> graph;
+    static List<List<Node>> reverse;
+
+    static int[] dist;
+    static int[] distR;
+
 
     public static void main(String[] args) throws IOException {
         Boj1238 process = new Boj1238();
@@ -20,70 +22,77 @@ public class Boj1238 {
 
     private void run() throws IOException {
         init();
-        iterFriend();
+        dist = dijkstra(graph, dist, X);
+        distR = dijkstra(reverse, distR, X);
+        int ans = findAnswer();
+        System.out.println(ans);
     }
 
     private void init() throws IOException {
         BufferedReader bf = new BufferedReader(new InputStreamReader(System.in));
-
         StringTokenizer st = new StringTokenizer(bf.readLine());
+
 
         N = Integer.parseInt(st.nextToken());
         M = Integer.parseInt(st.nextToken());
         X = Integer.parseInt(st.nextToken());
-
-
-
         graph = new ArrayList<>();
+        reverse = new ArrayList<>();
+
         for (int i = 0; i <= N; i++) {
             graph.add(new ArrayList<>());
+            reverse.add(new ArrayList<>());
         }
 
         for (int i = 0; i < M; i++) {
             st = new StringTokenizer(bf.readLine());
-            int s = Integer.parseInt(st.nextToken());
-            int e = Integer.parseInt(st.nextToken());
-            int c = Integer.parseInt(st.nextToken());
-            graph.get(s).add(new Node(c, e));
+            int u = Integer.parseInt(st.nextToken());
+            int v = Integer.parseInt(st.nextToken());
+            int t = Integer.parseInt(st.nextToken());
+            graph.get(u).add(new Node(t, v));
+            reverse.get(v).add(new Node(t, u));
         }
-
-        //start지점을 정해놓고 계속 돌린다.
     }
 
-    private void dijkstra(int start) {
-        dist = new int[N + 1];
-        Arrays.fill(dist, INF);
-        pq = new PriorityQueue<>();
+    private int[] dijkstra(List<List<Node>> g, int[] d, int x) {
+        PriorityQueue<Node> pq = new PriorityQueue<>();
+        d = new int[N + 1];
+        Arrays.fill(d, Integer.MAX_VALUE);
+        pq.offer(new Node(0, x));
+        d[x] = 0;
 
-
-        pq.offer(new Node(0, start));
-        dist[start] = 0;
 
         while (!pq.isEmpty()) {
             Node cur = pq.poll();
 
-            if (dist[cur.dst] < cur.cost) {
+            if (d[cur.dst] < cur.cost) {
                 continue;
             }
 
-            for (Node nxt : graph.get(cur.dst)) {
-                int newDist = dist[cur.dst] + nxt.cost;
-                if (dist[nxt.dst] > newDist) {
-                    dist[nxt.dst] = newDist;
+            for (Node nxt : g.get(cur.dst)) {
+                int newDist = d[cur.dst] + nxt.cost;
+                if (newDist < d[nxt.dst]) {
+                    d[nxt.dst] = newDist;
                     pq.offer(new Node(newDist, nxt.dst));
                 }
             }
+
         }
+
+        return d;
     }
 
-    private void iterFriend() {
+    private int findAnswer() {
+        int count = Integer.MIN_VALUE;
+
         for (int i = 1; i <= N; i++) {
-            dijkstra(i);
-            System.out.println(Arrays.toString(dist));
+            count = Math.max(dist[i] + distR[i], count);
         }
+
+        return count;
     }
 
-    static class Node implements Comparable<Node>{
+    static class Node implements Comparable<Node> {
         int cost;
         int dst;
 
@@ -93,8 +102,8 @@ public class Boj1238 {
         }
 
         @Override
-        public int compareTo(Node o) {
-            return Integer.compare(this.cost,o.cost);
+        public int compareTo(Node o1) {
+            return Integer.compare(this.cost, o1.cost);
         }
     }
 }
