@@ -1,21 +1,22 @@
 package unionfind;
 
-import java.util.*;
 import java.io.*;
+import java.util.*;
 
 public class Boj7511 {
     static int T;
     static int N;
-    static int K;
     static int[] p;
 
     static BufferedReader bf = new BufferedReader(new InputStreamReader(System.in));
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws IOException{
         Boj7511 process = new Boj7511();
         T = Integer.parseInt(bf.readLine());
         for (int i = 0; i < T; i++) {
+            System.out.println("Scenario " + (i+1) + ":");
             process.run();
+            System.out.println();
         }
     }
 
@@ -24,35 +25,36 @@ public class Boj7511 {
     }
 
     private void init() throws IOException {
-        N = Integer.parseInt(bf.readLine()); // 몇개
-        p = new int[N];
+
+        N = Integer.parseInt(bf.readLine());
+        p = new int[N + 1];
         Arrays.fill(p, -1);
+
         int m = Integer.parseInt(bf.readLine());
+
         for (int i = 0; i < m; i++) {
             StringTokenizer st = new StringTokenizer(bf.readLine());
-            int parent = Integer.parseInt(st.nextToken());
-            int child = Integer.parseInt(st.nextToken());
-            union(parent, child);
-            System.out.println(Arrays.toString(p));
+            int u = Integer.parseInt(st.nextToken());
+            int v = Integer.parseInt(st.nextToken());
+
+            union(u, v);
         }
 
         int k = Integer.parseInt(bf.readLine());
 
         for (int i = 0; i < k; i++) {
             StringTokenizer st = new StringTokenizer(bf.readLine());
-            int a = Integer.parseInt(st.nextToken());
-            int b = Integer.parseInt(st.nextToken());
 
-            if (find(a) == find(b)) {
+            int u = Integer.parseInt(st.nextToken());
+            int v = Integer.parseInt(st.nextToken());
+
+            if (find(u) == find(v)) {
                 System.out.println(1);
             }else{
                 System.out.println(0);
             }
         }
-
-        System.out.println(Arrays.toString(p));
     }
-
 
     private int find(int x) {
         if (p[x] < 0) {
@@ -68,19 +70,16 @@ public class Boj7511 {
         if (u == v) {
             return false;
         }
-
         if (p[v] < p[u]) {
             int temp = u;
             u = v;
             v = temp;
         }
-
         if (p[u] == p[v]) {
             p[u]--;
         }
         p[v] = u;
         return true;
-
 
     }
 }
