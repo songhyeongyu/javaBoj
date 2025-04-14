@@ -28,13 +28,6 @@ public class Boj2240 {
         T = Integer.parseInt(st.nextToken());
         W = Integer.parseInt(st.nextToken());
 
-        fruit = new int[T+1];
-        dp = new int[T + 1][W+1];
-
-        for (int i = 1; i <= T; i++) {
-            fruit[i] = Integer.parseInt(bf.readLine());
-        }
-
     }
 
     private void dp() {
