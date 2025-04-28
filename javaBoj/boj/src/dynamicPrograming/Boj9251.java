@@ -1,15 +1,13 @@
 package dynamicPrograming;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.Arrays;
+import java.util.*;
+import java.io.*;
 
 public class Boj9251 {
-    static String s1;
-    static String s2;
+    static char[] str1;
+    static char[] str2;
 
-    static int[][] lcs;
+    static int[][] board;
 
     public static void main(String[] args) throws IOException {
         Boj9251 process = new Boj9251();
@@ -18,34 +16,37 @@ public class Boj9251 {
 
     private void run() throws IOException {
         init();
-        makeLcs();
+        dp();
+        System.out.println(board[str1.length -1][str1.length-1]);
     }
 
     private void init() throws IOException {
         BufferedReader bf = new BufferedReader(new InputStreamReader(System.in));
 
-        s1 = bf.readLine();
-        s2 = bf.readLine();
+        String s1 = bf.readLine();
+        String s2 = bf.readLine();
+        board = new int[s1.length()+1][s1.length()+1];
+        str1 = new char[s1.length()+1];
+        str2 = new char[s2.length()+1];
+        for (int i = 1; i <= s1.length(); i++) {
+            str1[i] = s1.charAt(i-1);
+        }
 
-        lcs = new int[s1.length() + 1][s2.length() + 1];
-
+        for (int i = 1; i <= s2.length(); i++) {
+            str2[i] = s2.charAt(i-1);
+        }
     }
 
-    private void makeLcs() {
-        char[] originS1 = s1.toCharArray();
-        char[] originS2 = s2.toCharArray();
+    private void dp() {
 
-        for (int i = 1; i < s1.length() + 1; i++) {
-            for (int j = 1; j < s2.length() + 1; j++) {
-                if (originS1[i - 1] == originS2[j - 1]) {
-                    lcs[i][j] = lcs[i - 1][j - 1] + 1;
+        for (int i = 1; i < str1.length; i++) {
+            for (int j = 1; j < str1.length; j++) {
+                if (str1[i] == str2[j]) {
+                    board[i][j] = board[i - 1][j - 1] + 1;
                 }else{
-                    lcs[i][j] = Math.max(lcs[i - 1][j], lcs[i][j - 1]);
+                    board[i][j] = Math.max(board[i - 1][j], board[i][j - 1]);
                 }
             }
         }
-
-        System.out.println(Arrays.deepToString(lcs));
-
     }
 }
