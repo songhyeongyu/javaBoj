@@ -1,71 +1,75 @@
 package binarySearch;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.StringTokenizer;
+import java.io.*;
 import java.util.*;
 
 public class Boj1920 {
     static int N;
-    static int[] arr;
+    static List<Integer> A = new ArrayList<>();
     static int M;
-    static int[] targetArr;
+    static List<Integer> B = new ArrayList<>();
 
-
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws IOException{
         Boj1920 process = new Boj1920();
         process.run();
     }
 
-    private void run() throws IOException{
-
+    private void run() throws IOException {
         init();
+        findNum();
     }
 
-    private void init() throws IOException{
+    private void init() throws IOException {
         BufferedReader bf = new BufferedReader(new InputStreamReader(System.in));
-
         N = Integer.parseInt(bf.readLine());
-        arr = new int[N];
         StringTokenizer st = new StringTokenizer(bf.readLine());
         for (int i = 0; i < N; i++) {
-            arr[i] = Integer.parseInt(st.nextToken());
+            A.add(Integer.parseInt(st.nextToken()));
         }
 
-
-        Arrays.sort(arr);
         M = Integer.parseInt(bf.readLine());
         st = new StringTokenizer(bf.readLine());
-        targetArr = new int[M];
-        for (int i = 0; i < M; i++) {
-            targetArr[i] = Integer.parseInt(st.nextToken());
-        }
 
         for (int i = 0; i < M; i++) {
-            int result = binarySearch(targetArr[i]);
-            System.out.println(result);
+            B.add(Integer.parseInt(st.nextToken()));
         }
-
+        Collections.sort(A);
 
 
     }
 
-    private int binarySearch(int target) {
-        int st = 0;
-        int ed = N - 1;
+    private void findNum() {
+        for (Integer integer : B) {
+            int res = b(integer);
+            System.out.println(res);
+        }
+    }
 
-        while (st <= ed) {
-            int mid = (st + ed) / 2;
-            if (target < arr[mid]) {
-                ed = mid - 1;
-            }else if(target > arr[mid]  ){
+    private int binary(int target) {
+        int result = Collections.binarySearch(A, target);
+        if (result >= 0) {
+            return 1;
+        }
+        return 0;
+    }
+
+    private int b(int target) {
+        int st = 0;
+        int end = A.size() - 1;
+
+        while (st <= end) {
+            int mid = (st + end) / 2;
+            if (target > A.get(mid)) {
                 st = mid + 1;
-            }
-            else{
+            } else if (target < A.get(mid)) {
+                end = mid - 1;
+            } else if (target == A.get(mid)) {
                 return 1;
             }
         }
+
+
+
         return 0;
     }
 }
