@@ -5,83 +5,75 @@ import java.util.*;
 
 public class Boj10816 {
     static int N;
+    static int[] A;
     static int M;
-    static int[] arr;
-    static int[] targetArr;
-    static StringBuilder sb = new StringBuilder();
+    static int[] B;
 
     public static void main(String[] args) throws IOException{
         Boj10816 process = new Boj10816();
         process.run();
-
     }
 
     private void run() throws IOException {
         init();
-        for (int i = 0; i < M; i++) {
-            binarySearch(targetArr[i]);
-        }
-        System.out.println(sb.toString());
     }
 
-    private void init() throws IOException{
+    private void init() throws IOException {
         BufferedReader bf = new BufferedReader(new InputStreamReader(System.in));
-        N = Integer.parseInt(bf.readLine());
-        arr = new int[N];
-        StringTokenizer st = new StringTokenizer(bf.readLine());
-        for (int i = 0; i < N; i++) {
-            arr[i] = Integer.parseInt(st.nextToken());
-        }
 
-        Arrays.sort(arr);
+        N = Integer.parseInt(bf.readLine());
+        StringTokenizer st = new StringTokenizer(bf.readLine());
+        A = new int[N];
+        for (int i = 0; i < N; i++) {
+            A[i] = Integer.parseInt(st.nextToken());
+        }
 
         M = Integer.parseInt(bf.readLine());
-        targetArr = new int[M];
         st = new StringTokenizer(bf.readLine());
+        B = new int[M];
         for (int i = 0; i < M; i++) {
-            targetArr[i] = Integer.parseInt(st.nextToken());
+            B[i] = Integer.parseInt(st.nextToken());
+        }
+
+        Arrays.sort(A);
+
+        for (int target : B) {
+            int result = upper(target) - lower(target);
+            System.out.println(result);
         }
     }
 
-    private void binarySearch(int target) {
+    private int lower(int target) {
         int st = 0;
-        int ed = arr.length - 1;
+        int end = A.length;
 
-        while (st <= ed) {
-            int mid = (st + ed) / 2;
-
-            if (target > arr[mid]) {
-                st = mid + 1;
-            } else if (target < arr[mid]) {
-                ed = mid - 1;
+        while (st < end) {
+            int mid = (st + end) / 2;
+            if (A[mid] >= target) {
+                end = mid;
             }else{
-                int ans = find(mid);
-                sb.append(ans).append(" ");
-                return;
+                st = mid + 1;
             }
         }
-        sb.append(0).append(" ");
+
+        return st;
     }
 
-    private int find(int mid) {
-        int rCount = 0;
-        int lCount = 0;
-        for (int i = mid; i < arr.length; i++) {
-            if (arr[i] == arr[mid]) {
-                rCount++;
+    private int upper(int target) {
+        int st = 0;
+        int end = A.length;
+
+        while (st < end){
+            int mid = (st + end) / 2;
+            if (A[mid] > target) {
+                end = mid;
+            }else{
+                st = mid + 1;
             }
         }
 
-        for (int i = 0; i < mid; i++) {
-            if (arr[i] == arr[mid]) {
-                lCount++;
-            }
-        }
-        int count = rCount + lCount;
-
-        return count;
+        return st;
     }
-
 
 }
 
