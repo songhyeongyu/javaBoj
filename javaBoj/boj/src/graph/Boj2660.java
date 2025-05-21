@@ -3,35 +3,19 @@ package graph;
 import java.io.*;
 import java.util.*;
 
+class Boj2660 {
 
-public class Boj2660 {
     static int N;
-    static List<List<Integer>> friend;
-    static boolean[][] visited;
-    static List<int[]> friendShip = new ArrayList<>();
-    static StringBuilder sb = new StringBuilder();
+    static List<List<Integer>> graph = new ArrayList<>();
+    static List<Node> result = new ArrayList<>();
 
 
     public static void main(String[] args) throws IOException{
-        Boj2660 process = new Boj2660();
-        process.run();
-    }
-
-    private void run() throws IOException{
-        init();
-        bfs(0);
-        System.out.println(findMinDepth() + " " + countMinDepth());
-        System.out.println(sb.toString());
-    }
-
-    private void init() throws IOException{
         BufferedReader bf = new BufferedReader(new InputStreamReader(System.in));
-
         N = Integer.parseInt(bf.readLine());
-        friend = new ArrayList<>(N + 1);
-        visited = new boolean[N+1][N+1];
+
         for (int i = 0; i <= N; i++) {
-            friend.add(new ArrayList<>());
+            graph.add(new ArrayList<>());
         }
 
         while (true) {
@@ -43,68 +27,81 @@ public class Boj2660 {
                 break;
             }
 
-            friend.get(u).add(v);
-            friend.get(v).add(u);
+            graph.get(u).add(v);
+            graph.get(v).add(u);
         }
 
+        bfs();
+        printAnswer();
 
     }
 
-    private void bfs(int depth) {
+    private static void bfs() {
 
-
+        boolean[] visited;
         for (int i = 1; i <= N; i++) {
-            visited[i][i] = true;
-            Queue<int[]> que = new LinkedList<>();
-            que.offer(new int[]{i,depth});
-            int count = 0;
+            Queue<Node> que = new LinkedList<>();
+            visited= new boolean[N+1];
+
+            que.offer(new Node(i, 0));
+            visited[i] = true;
+            int now = 0;
             while (!que.isEmpty()) {
-                int[] cur = que.poll();
-                count = Math.max(count, cur[1]);
-                for (int nxt : friend.get(cur[0])) {
-                    if (visited[i][nxt]) {
+                Node cur = que.poll();
+
+                for (int nxt : graph.get(cur.x)) {
+                    if (visited[nxt]) {
                         continue;
                     }
-
-                    visited[i][nxt] = true;
-                    que.offer(new int[]{nxt,cur[1] + 1});
+                    visited[nxt] = true;
+                    now = cur.depth + 1;
+                    que.offer(new Node(nxt, now));
                 }
+
             }
-            friendShip.add(new int[]{i,count});
-        }
-    }
-
-    private int findMinDepth() {
-        int min = Integer.MAX_VALUE;
-        for (int[] depth : friendShip) {
-            min = Math.min(depth[1], min);
+            result.add(new Node(i, now));
         }
 
-        return min;
     }
 
-    private int countMinDepth() {
-        int count = 0;
-        for (int[] ints : friendShip) {
-            if (ints[1] == findMinDepth()) {
-                sb.append(ints[0]).append(" ");
-                count++;
+    private static void printAnswer() {
+        Collections.sort(result,(n1,n2) ->{
+            if (n1.depth == n2.depth) {
+                return Integer.compare(n1.x, n2.x);
+            }
+            return Integer.compare(n1.depth, n2.depth);
+        });
+
+        int value = result.get(0).depth;
+        List<Integer> num = new ArrayList<>();
+        StringBuilder sb = new StringBuilder();
+        for (Node node : result) {
+            if (node.depth == value) {
+                num.add(node.x);
+                sb.append(node.x).append(" ");
+            }
+            else{
+                break;
             }
         }
-        return count;
+
+        System.out.println(value + " " + num.size());
+        System.out.println(sb.toString());
+
     }
-
-
-
 
     static class Node{
-        int idx;
-        int cnt;
 
-        public Node(int idx, int cnt) {
-            this.idx = idx;
-            this.cnt = cnt;
+        int x;
+        int depth;
+
+        public Node(int x, int depth) {
+            this.x = x;
+            this.depth = depth;
         }
-    }
 
+
+    }
 }
+
+
