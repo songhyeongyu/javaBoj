@@ -7,19 +7,18 @@ class Boj5567 {
 
     static int N;
     static int M;
-    static int num;
+    int num;
+
     static List<List<Integer>> graph = new ArrayList<>();
 
-    static boolean[] visited;
-
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws IOException{
         Boj5567 process = new Boj5567();
         process.run();
     }
 
-    private void run() throws IOException {
+    private void run() throws IOException{
         init();
-        dfs(1);
+        bfs();
         System.out.println(num - 1);
     }
 
@@ -27,32 +26,50 @@ class Boj5567 {
         BufferedReader bf = new BufferedReader(new InputStreamReader(System.in));
         N = Integer.parseInt(bf.readLine());
         M = Integer.parseInt(bf.readLine());
-        visited = new boolean[N + 1];
+
         for (int i = 0; i <= N; i++) {
             graph.add(new ArrayList<>());
         }
 
         for (int i = 0; i < M; i++) {
             StringTokenizer st = new StringTokenizer(bf.readLine());
-
             int u = Integer.parseInt(st.nextToken());
             int v = Integer.parseInt(st.nextToken());
 
             graph.get(u).add(v);
             graph.get(v).add(u);
         }
+    }
 
+    private void bfs() {
+        Queue<Node> que = new LinkedList<>();
+        boolean[] visited = new boolean[N + 1];
+
+        que.offer(new Node(1, 0));
+        visited[1] = true;
+
+        while (!que.isEmpty()) {
+            Node cur = que.poll();
+            num++;
+            for (int nxt : graph.get(cur.x)) {
+                if (visited[nxt] || cur.depth >= 2) {
+                    continue;
+                }
+                visited[nxt] = true;
+                que.offer(new Node(nxt, cur.depth + 1));
+            }
+        }
 
     }
 
-    private void dfs(int cur) {
-        visited[cur] = true;
-        num++;
-        for (int nxt : graph.get(cur)) {
-            if (visited[nxt]) {
-                continue;
-            }
-            dfs(nxt);
+    static class Node{
+
+        int x;
+        int depth;
+
+        public Node(int x, int depth) {
+            this.x = x;
+            this.depth = depth;
         }
     }
 }
